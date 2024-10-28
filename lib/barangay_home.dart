@@ -2,10 +2,26 @@ import 'package:flutter/material.dart';
 import 'barangay_community_page.dart'; // Import the file with BarangayCommunitySetSchedScreen
 import 'barangay_junkshop.dart';
 import 'barangay_collect_scrap_page.dart'; // Import the file with BarangayJunkshopScreen
-
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 class BarangayHomeScreen extends StatelessWidget {
   final Map data;
+String getGreeting() {
+  // Initialize the timezone database
+  tz.initializeTimeZones();
 
+  // Get current time in the Philippines timezone
+final now = tz.TZDateTime.now(tz.getLocation('Asia/Manila'));
+  final hour = now.hour; // Get the current hour
+
+  if (hour < 12) {
+    return 'Good morning';
+  } else if (hour < 18) {
+    return 'Good afternoon';
+  } else {
+    return 'Good evening';
+  }
+}
   const BarangayHomeScreen({Key? key, required this.data}) : super(key: key);
   
   @override
@@ -29,16 +45,15 @@ class BarangayHomeScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.location_on, color: Colors.grey),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'Located at ${data['barangay']['bLocation']}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Roboto',
-                          ),
-                        ),
+                       
+                       Text(
+  '${getGreeting()}',
+  style: TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'Roboto',
+  ),
+),
                       ],
                     ),
                 
@@ -108,7 +123,7 @@ class BarangayHomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CategoryItem(
-                      title: 'Community',
+                      title: 'Resident',
                       assetPath: 'assets/COMMUNITYAA.png',
                       onTap: () {
                         Navigator.push(

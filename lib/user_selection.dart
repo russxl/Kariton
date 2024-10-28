@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/barangay_register_screen.dart';
-import 'package:notirak/community_signup_screen.dart';
-import 'package:notirak/junkshop_register_screen.dart';
+import 'package:Kariton/barangay_register_screen.dart';
+import 'package:Kariton/community_signup_screen.dart';
+import 'package:Kariton/junkshop_register_screen.dart';
 import 'community_login_screen.dart';
 import 'admin_login.dart';
 
@@ -74,7 +74,7 @@ class _UserTypeSelectionState extends State<UserTypeSelection> {
                   items: [
                     DropdownMenuItem<String>(
                       value: 'Community',
-                      child: Text('Community',
+                      child: Text('Resident',
                           style: TextStyle(
                             fontSize: 18,
                             fontFamily: 'Roboto',

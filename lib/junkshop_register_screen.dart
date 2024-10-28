@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:notirak/community_login_screen.dart';
+import 'package:Kariton/community_login_screen.dart';
 import 'junkshop_register_screen_add.dart';
 
 class JunkshopRegisterScreen extends StatelessWidget {

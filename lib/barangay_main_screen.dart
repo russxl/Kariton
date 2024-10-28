@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
-import 'package:notirak/barangay_notification.dart';
-import 'package:notirak/community_login_screen.dart';
+import 'package:Kariton/api/api.dart';
+import 'package:Kariton/barangay_notification.dart';
+import 'package:Kariton/community_login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'barangay_home.dart';
 import 'barangay_profile.dart';

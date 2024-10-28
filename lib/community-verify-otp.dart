@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import this for FilteringTextInputFormatter
-import 'package:notirak/api/api.dart';
-import 'package:notirak/community_login_screen.dart';
+import 'package:Kariton/api/api.dart';
+import 'package:Kariton/community_login_screen.dart';
 import 'community_password_reset_screen.dart'; // Import your PasswordResetScreen
 
 class VerifyOtp extends StatelessWidget {
-  
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController());
   final Map userData; // Add this field to accept data
@@ -27,7 +26,7 @@ class VerifyOtp extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView( // Make the content scrollable
         padding: EdgeInsets.fromLTRB(30.0, 80.0, 30.0, 30.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

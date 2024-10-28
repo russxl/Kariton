@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 
 class SetPriceJunkshop extends StatefulWidget {
   final Map data;
@@ -35,7 +35,7 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Scrap Conversion Points',
+          'Scrap Conversion Price',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -47,7 +47,7 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const Text(
-              'Scraps Conversion Points (per kilo)',
+              'Scraps Conversion Price (per kilo)',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -108,7 +108,7 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Points per Kilo',
+                        'Price per Kilo',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
@@ -276,7 +276,7 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
                   FilteringTextInputFormatter.digitsOnly, // Restrict to digits only
                 ],
                 decoration: const InputDecoration(
-                  labelText: 'Points per Kilo',
+                  labelText: 'Price per Kilo',
                 ),
               ),
             ],

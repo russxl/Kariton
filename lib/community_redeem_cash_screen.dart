@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 import 'community_scrap_points_screen.dart'; // Import the new screen
 
 class RedeemCashScreen extends StatefulWidget {
@@ -214,19 +214,35 @@ class _RedeemCashScreenState extends State<RedeemCashScreen> {
     );
   }
 
-  Widget _buildRedeemButton() {
-    return ElevatedButton(
-      onPressed: () {
-        redeemPoints();
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF40A858),
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 15.0),
+ Widget _buildRedeemButton() {
+  return Column(
+    children: [
+      const Padding(
+        padding: EdgeInsets.only(bottom: 8.0),
+        child: Text(
+          'Note: Please wait for your turn before redeeming.',
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.red,
+          ),
+          textAlign: TextAlign.center,
+        ),
       ),
-      child: const Text('Redeem'),
-    );
-  }
+      ElevatedButton(
+        onPressed: () {
+          redeemPoints();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF40A858),
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 15.0),
+        ),
+        child: const Text('Redeem'),
+      ),
+    ],
+  );
+}
 
   Widget _buildErrorMessage() {
     return Visibility(
@@ -255,51 +271,63 @@ class _RedeemCashScreenState extends State<RedeemCashScreen> {
     }
   }
 
-  Future<void> redeemPoints() async {
-    final points = _safeParseDouble(_pointsController.text);
-    final cash = _safeParseDouble(_cashController.text);
-    final totalPoints = _safeParseDouble(widget.userData['user']?['points']);
+Future<void> redeemPoints() async {
+  final points = _safeParseDouble(_pointsController.text);
+  final cash = _safeParseDouble(_cashController.text);
+  final totalPoints = _safeParseDouble(widget.userData['user']?['points']);
 
-    if (points == 0 || cash == 0) {
-      setState(() {
-        _errorMessage = 'Please enter valid points and cash values.';
-      });
-      return;
-    }
-
-    if (points > totalPoints) {
-      setState(() {
-        _errorMessage = 'You cannot redeem more points than you currently have.';
-      });
-      return;
-    }
-
-    // Perform redemption logic
-    var redeemData = {
-      "userId": widget.userData['user']['_id'],
-      "points": points,
-      "cash": cash,
-    };
-
-    
-    try {
-      var data = {
-        'user_id': widget.userData['user']?['_id'],
-        'points': points,
-        'cash': cash,
-        'barangay': widget.userData['user']?['barangay']
-      };
-      await Api.redeem(context, data);
-      // Clear error message after successful redeem
-      setState(() {
-        _errorMessage = '';
-        _pointsController.clear();
-        _cashController.clear();
-      });
-    }  catch (error) {
-      print("Error redeeming points: $error");
-    }
+  if (points == 0 || cash == 0) {
+    setState(() {
+      _errorMessage = 'Please enter valid points and cash values.';
+    });
+    return;
   }
+
+  if (points > totalPoints) {
+    setState(() {
+      _errorMessage = 'You cannot redeem more points than you currently have.';
+    });
+    return;
+  }
+
+  // Perform redemption logic
+  var redeemData = {
+    "userId": widget.userData['user']['_id'],
+    "points": points,
+    "cash": cash,
+  };
+
+  try {
+    var data = {
+      'user_id': widget.userData['user']?['_id'],
+      'points': points,
+      'cash': cash,
+      'barangay': widget.userData['user']?['barangay']
+    };
+    await Api.redeem(context, data);
+    
+    // Show summary of the transaction in a SnackBar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Success! Redeemed $points points for ₱$cash.',
+          style: const TextStyle(fontSize: 16.0),
+        ),
+        duration: const Duration(seconds: 3),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    // Clear error message after successful redeem
+    setState(() {
+      _errorMessage = '';
+      _pointsController.clear();
+      _cashController.clear();
+    });
+  } catch (error) {
+    print("Error redeeming points: $error");
+  }
+}
 
   @override
   void dispose() {

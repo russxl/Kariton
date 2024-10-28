@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'community_notification_screen.dart';
 import 'community_general_prof.dart';
 import 'community_login_screen.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class HomeScreen extends StatefulWidget {
   final Map data; // Assuming data['scraps'] is a list of scrap items
@@ -32,6 +34,22 @@ class _HomeScreenState extends State<HomeScreen> {
   } catch (error) {
     // Handle the error (show message, log, etc.)
     print("Error refreshing data: $error");
+  }
+}
+String getGreeting() {
+  // Initialize the timezone database
+  tz.initializeTimeZones();
+
+  // Get current time in the Philippines timezone
+final now = tz.TZDateTime.now(tz.getLocation('Asia/Manila'));
+  final hour = now.hour; // Get the current hour
+
+  if (hour < 12) {
+    return 'Good morning';
+  } else if (hour < 18) {
+    return 'Good afternoon';
+  } else {
+    return 'Good evening';
   }
 }
 
@@ -67,25 +85,27 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              _handleMenuSelection(context, value);
-            },
-            itemBuilder: (BuildContext context) {
-              return {'View Profile'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-            child: ClipOval(
-              child: Icon(
-                Icons.person,
-                size: 20.0,
-              ),
-            ),
-          ),
+      
+            Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                       
+                       Text(
+  '${getGreeting()}',
+  style: TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    fontFamily: 'Roboto',
+  ),
+),
+                      ],
+                    ),
+                
+                  ],
+                ),
+                SizedBox(height: 16.0),
           Row(
             children: [
               IconButton(
@@ -155,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Categories',
+                'Accepted Scraps',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],

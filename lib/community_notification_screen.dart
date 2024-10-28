@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 
 class NotificationsScreen extends StatefulWidget {
   final Map data;
@@ -68,7 +68,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               return Column(
                 children: [
                   NotificationItem(
-                    iconPath: 'assets/profile_icon.png', // Replace with correct icon path
+         
                     message: log['logs'] ?? 'No message available',
                     time: log['time'] ?? 'Unknown time',
                     type: log['type'] ?? 'General', // Notification type
@@ -85,14 +85,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 }
 
 class NotificationItem extends StatelessWidget {
-  final String iconPath;
+ 
   final String message;
   final String time;
   final String type; // Add a new parameter for notification type
 
   const NotificationItem({
     Key? key,
-    required this.iconPath,
+
     required this.message,
     required this.time,
     required this.type, // Include the notification type in constructor
@@ -112,24 +112,7 @@ class NotificationItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center, // Align items vertically centered
         children: [
-          ClipOval(
-            child: Container(
-              width: 52, // Set width to 52
-              height: 52, // Set height to 52
-              decoration: BoxDecoration(
-                color: Colors.grey[200], // Placeholder color
-                borderRadius: BorderRadius.circular(26.0), // Half of width or height for circle
-              ),
-              child: Center(
-                child: Image.asset(
-                  iconPath,
-                  width: 52,
-                  height: 52,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
+     
           SizedBox(width: 16.0),
           Expanded(
             child: Column(

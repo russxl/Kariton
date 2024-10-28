@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:notirak/community_login_screen.dart';
+import 'package:Kariton/community_login_screen.dart';
 import 'barangay_register_screen_add.dart'; // Import the new screen
 
 class BarangayRegisterScreen extends StatelessWidget {

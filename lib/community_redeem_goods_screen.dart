@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 import 'community_scrap_points_screen.dart'; // Import the new screen
 import 'community_available_redeemable_goods_screen.dart';
 

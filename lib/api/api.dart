@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:notirak/barangay_collect_scrap_page.dart';
-import 'package:notirak/barangay_community_receipt.dart';
-import 'package:notirak/barangay_community_save_sched.dart';
-import 'package:notirak/barangay_junkshop_detail.dart';
-import 'package:notirak/barangay_main_screen.dart';
-import 'package:notirak/community-verify-otp.dart';
-import 'package:notirak/community_login_screen.dart';
-import 'package:notirak/community_main_screen.dart';
-import 'package:notirak/junkshop_main.dart';
-import 'package:notirak/main.dart';
-import 'package:notirak/user_selection.dart';
+import 'package:Kariton/barangay_collect_scrap_page.dart';
+import 'package:Kariton/barangay_community_receipt.dart';
+import 'package:Kariton/barangay_community_save_sched.dart';
+import 'package:Kariton/barangay_junkshop_detail.dart';
+import 'package:Kariton/barangay_main_screen.dart';
+import 'package:Kariton/community-verify-otp.dart';
+import 'package:Kariton/community_login_screen.dart';
+import 'package:Kariton/community_main_screen.dart';
+import 'package:Kariton/junkshop_main.dart';
+import 'package:Kariton/main.dart';
+import 'package:Kariton/user_selection.dart';
 import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Api {
- static const baseUrl = "https://kariton-mobile-server.onrender.com/api/";
+ static const baseUrl = "http://192.168.123.53/api/";
 static Future<void> authenticationCommunity(BuildContext context, Map pdata) async {
   var url = Uri.parse("${baseUrl}login");
   print("$pdata hi");
@@ -89,10 +89,11 @@ static Future<bool> registrationCommunity(BuildContext context, Map pdata) async
   }
 }
 
-  static Future<void> registrationBarangay(BuildContext context, Map<String, dynamic> pdata, File imageFile) async {
+ static Future<bool> registrationBarangay(BuildContext context, Map<String, dynamic> pdata, File imageFile) async {
   var url = Uri.parse("${baseUrl}register");
   var request = http.MultipartRequest('POST', url);
-print(pdata);
+  print(pdata);
+
   // Convert the pdata values to strings and add to the request fields
   pdata.forEach((key, value) {
     request.fields[key] = value.toString();
@@ -117,19 +118,17 @@ print(pdata);
       var data = jsonDecode(responseBody);
       print('Success: ${data['message']}');
       
-      // Navigate to the next page after successful authentication
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MyApp()),
-      );
+      // Return true for successful registration
+      return true;
     } else {
       throw Exception("Failed to authenticate");
-      
     }
   } catch (e) {
     debugPrint(e.toString());
+    return false; // Return false in case of failure
   }
 }
+
    static Future<bool> registrationJunkshop(BuildContext context, Map<String, dynamic> pdata, File imageFile) async {
     var url = Uri.parse("${baseUrl}register");
     var request = http.MultipartRequest('POST', url);
@@ -428,25 +427,26 @@ static Future<bool> collectScrap(BuildContext context, Map pdata) async {
     debugPrint(e.toString());
   }
 }
- static Future<void> pickUp(BuildContext context, Map pdata) async {
+ static Future<bool> pickUp(BuildContext context, Map pdata) async {
   var url = Uri.parse("${baseUrl}pickUp");
   print("$pdata hi");
 
   // Convert all values in pdata to String
   Map<String, String> stringifiedData = pdata.map((key, value) => MapEntry(key, value.toString()));
- 
+  
   try {
     final res = await http.post(url, body: stringifiedData);
 
     if (res.statusCode == 200) {
       final data = jsonDecode(res.body.toString());
       print(data['message']);
-     Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => JunkshopMainScreen(data:data),
-          ),
-        );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => JunkshopMainScreen(data: data),
+        ),
+      );
+      return true; // Indicate success
     } else {
       final data = jsonDecode(res.body.toString());
       print(data['message']);
@@ -454,8 +454,10 @@ static Future<bool> collectScrap(BuildContext context, Map pdata) async {
     }
   } catch (e) {
     debugPrint(e.toString());
+    return false; // Indicate failure
   }
 }
+
  static Future<void> junkShopList(BuildContext context, Map id) async {
   var url = Uri.parse("${baseUrl}junkShopList");
 print(id);

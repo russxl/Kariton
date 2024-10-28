@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
-import 'package:notirak/community_forgot_password.dart';
+import 'package:Kariton/api/api.dart';
+import 'package:Kariton/community_forgot_password.dart';
 import 'community_login_screen.dart'; // Import your LoginScreen
 
 class PasswordResetScreen extends StatefulWidget {
@@ -38,7 +38,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
     return regex.hasMatch(password);
   }
 
-  void savePasswordAndNavigateBack() {
+  void savePasswordAndNavigateBack() async {
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
 
@@ -58,7 +58,28 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       "confirmPassword": _confirmPasswordController.text
     };
 
-    Api.resetPassword(context, data); // Call your API method to reset password
+    try {
+      await Api.resetPassword(context, data); // Call your API method to reset password
+
+      // If successful, show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Password reset successful! Please log in with your new password."),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Navigate back to the login screen after a short delay
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          (route) => false,
+        );
+      });
+    } catch (error) {
+      _showErrorDialog(context, 'Failed to reset password. Please try again.');
+    }
   }
 
   void _showErrorDialog(BuildContext context, String message) {
@@ -96,7 +117,7 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(30.0, 80.0, 30.0, 30.0),
         child: Form(
           key: _formKey,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 
 class CommunitySetDatePage extends StatefulWidget {
   final Map data;
@@ -59,93 +59,111 @@ class _CommunitySetDatePageState extends State<CommunitySetDatePage> {
             SizedBox(height: 24.0),
 
             // Date Picker
-            GestureDetector(
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: _selectedDate,
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2101),
-                );
-                if (pickedDate != null && pickedDate != _selectedDate)
-                  setState(() {
-                    _selectedDate = pickedDate;
-                  });
-              },
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  labelText: 'Date',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF40A858)), // Color of the border
-                  ),
-                ),
-                child: Text(
-                  '${_selectedDate.toLocal()}'.split(' ')[0],
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
+          // Date Picker
+GestureDetector(
+  onTap: () async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime.now(), // Disable past dates
+      lastDate: DateTime(2101),
+    );
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    }
+  },
+  child: InputDecorator(
+    decoration: InputDecoration(
+      labelText: 'Date',
+      border: OutlineInputBorder(
+        borderSide: BorderSide(color: Color(0xFF40A858)), // Color of the border
+      ),
+    ),
+    child: Text(
+      _selectedDate == null
+          ? 'Select Date'
+          : '${_selectedDate!.toLocal()}'.split(' ')[0],
+      style: TextStyle(fontSize: 16),
+    ),
+  ),
+),
+
             SizedBox(height: 20.0),
 
             // Start and End Time Picker
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () async {
-                      TimeOfDay? pickedStartTime = await showTimePicker(
-                        context: context,
-                        initialTime: _selectedStartTime,
-                      );
-                      if (pickedStartTime != null && pickedStartTime != _selectedStartTime)
-                        setState(() {
-                          _selectedStartTime = pickedStartTime;
-                        });
-                    },
-                    child: InputDecorator(
-                      decoration: InputDecoration(
-                        labelText: 'Start Time',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF40A858)), // Color of the border
-                        ),
-                      ),
-                      child: Text(
-                        _selectedStartTime.format(context),
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 20.0),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () async {
-                      TimeOfDay? pickedEndTime = await showTimePicker(
-                        context: context,
-                        initialTime: _selectedEndTime,
-                      );
-                      if (pickedEndTime != null && pickedEndTime != _selectedEndTime)
-                        setState(() {
-                          _selectedEndTime = pickedEndTime;
-                        });
-                    },
-                    child: InputDecorator(
-                      decoration: InputDecoration(
-                        labelText: 'End Time',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFF40A858)), // Color of the border
-                        ),
-                      ),
-                      child: Text(
-                        _selectedEndTime.format(context),
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+           Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Expanded(
+      child: GestureDetector(
+        onTap: () async {
+          TimeOfDay? pickedStartTime = await showTimePicker(
+            context: context,
+            initialTime: _selectedStartTime,
+          );
+          if (pickedStartTime != null && pickedStartTime != _selectedStartTime) {
+            setState(() {
+              _selectedStartTime = pickedStartTime;
+            });
+          }
+        },
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: 'Start Time',
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF40A858)), // Color of the border
             ),
+          ),
+          child: Text(
+            _selectedStartTime.format(context),
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ),
+    ),
+    SizedBox(width: 20.0),
+    Expanded(
+      child: GestureDetector(
+        onTap: () async {
+          TimeOfDay? pickedEndTime = await showTimePicker(
+            context: context,
+            initialTime: _selectedEndTime,
+          );
+          if (pickedEndTime != null && pickedEndTime != _selectedEndTime) {
+            if (_selectedStartTime != null &&
+                (pickedEndTime.hour < _selectedStartTime.hour ||
+                 (pickedEndTime.hour == _selectedStartTime.hour &&
+                  pickedEndTime.minute <= _selectedStartTime.minute))) {
+              // Show error message if end time is not later than start time
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('End time must be later than start time')),
+              );
+            } else {
+              setState(() {
+                _selectedEndTime = pickedEndTime;
+              });
+            }
+          }
+        },
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: 'End Time',
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF40A858)), // Color of the border
+            ),
+          ),
+          child: Text(
+            _selectedEndTime.format(context),
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      ),
+    ),
+  ],
+),
+
             SizedBox(height: 20.0),
 
             // Description

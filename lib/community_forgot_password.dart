@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
-import 'package:notirak/community-verify-otp.dart';
-import 'package:notirak/community_login_screen.dart';
+import 'package:Kariton/api/api.dart';
+import 'package:Kariton/community-verify-otp.dart';
+import 'package:Kariton/community_login_screen.dart';
 import 'community_password_reset_screen.dart'; // Import your PasswordResetScreen
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           },
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(30.0, 80.0, 30.0, 30.0),
         child: Form(
           key: _formKey, // Wrap the form key around the Form widget
@@ -115,7 +115,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       // Call the API to send OTP
       await Api.sendOtp(context, data);
 
-      // If successful, navigate to OTP verification screen
+      // If successful, show a success message and navigate to OTP verification screen
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("OTP sent successfully! Please check your email."),
+          backgroundColor: Colors.green,
+        ),
+      );
+
       Navigator.push(
         context,
         MaterialPageRoute(

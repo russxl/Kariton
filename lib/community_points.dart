@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 import 'community_redeem_cash_screen.dart';
 import 'community_redeem_goods_screen.dart';
 import 'community_scrap_points_screen.dart'; // Import the new screen

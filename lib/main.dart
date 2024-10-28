@@ -1,13 +1,13 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:notirak/api/api.dart';
-import 'package:notirak/barangay_main_screen.dart';
-import 'package:notirak/community_home.dart';
-import 'package:notirak/community_login_screen.dart';
-import 'package:notirak/community_main_screen.dart';
-import 'package:notirak/junkshop_main.dart';
-import 'package:notirak/splash_screen.dart';
+import 'package:Kariton/api/api.dart';
+import 'package:Kariton/barangay_main_screen.dart';
+import 'package:Kariton/community_home.dart';
+import 'package:Kariton/community_login_screen.dart';
+import 'package:Kariton/community_main_screen.dart';
+import 'package:Kariton/junkshop_main.dart';
+import 'package:Kariton/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 

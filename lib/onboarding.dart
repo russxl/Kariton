@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/community_login_screen.dart';
+import 'package:Kariton/community_login_screen.dart';
 import 'content_model.dart';
 import 'user_selection.dart';
 

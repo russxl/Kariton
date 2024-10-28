@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/api/api.dart';
-import 'package:notirak/community_main_screen.dart';
+import 'package:Kariton/api/api.dart';
+import 'package:Kariton/community_main_screen.dart';
 
 class RedeemableItemDetailsScreen extends StatelessWidget {
   final String itemName;
@@ -57,13 +57,19 @@ class RedeemableItemDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             Text(
-              '${userData['redeemDate']['endTime']} ',
+              '${userData['redeemDate']['endTime']}',
               style: const TextStyle(fontSize: 16.0, color: Colors.grey),
             ),
             const SizedBox(height: 16.0),
             Text(
               description,
               style: const TextStyle(fontSize: 16.0),
+            ),
+            const SizedBox(height: 20.0),
+            Text(
+              'Please wait for your turn before redeeming the goods.', // New note added here
+              style: const TextStyle(fontSize: 14.0, color: Colors.grey),
+              textAlign: TextAlign.center,
             ),
             const Spacer(),
             ElevatedButton(
@@ -117,11 +123,11 @@ class RedeemableItemDetailsScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
-            'Pending Request',
+            'Redeem Success',
             style: TextStyle(color: Colors.black),
           ),
           content: const Text(
-            'For the time being, the request will remain pending while we verify the redemption you made.',
+            'Claim it to the barangay representative or wait for your turn.',
             style: TextStyle(color: Color.fromARGB(255, 87, 92, 88)),
           ),
           actions: <Widget>[
@@ -131,11 +137,11 @@ class RedeemableItemDetailsScreen extends StatelessWidget {
                 style: TextStyle(color: Color(0xFF40A858)),
               ),
               onPressed: () {
-                var id ={
-                  "id":userData['user']["_id"],
-                  "type":"Community"
+                var id = {
+                  "id": userData['user']["_id"],
+                  "type": "Community"
                 };
-             Api.getHome(context, id);
+                Api.getHome(context, id);
               },
             ),
           ],

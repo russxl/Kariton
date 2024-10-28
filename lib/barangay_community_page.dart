@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/barangay_collect_scrap_page.dart';
-import 'package:notirak/barangay_community_set_conversion_points.dart';
-import 'package:notirak/barangay_community_set_scrap_price.dart';
+import 'package:Kariton/barangay_collect_scrap_page.dart';
+import 'package:Kariton/barangay_community_set_conversion_points.dart';
+import 'package:Kariton/barangay_community_set_scrap_price.dart';
 import 'barangay_community_set_sched.dart';
 import 'barangay_community_set_date_page.dart';
 import 'barangay_collect_scrap_page.dart';
@@ -138,39 +138,7 @@ class CommunityPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
 
-              // Border Box 4: Collect Scrap
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BarangayCollectScrapPage(data:data),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.orange),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Collect Scrap',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'You can collect the scraps from each household in the community for an exchange of points for their scraps depending on weight that can be redeem for goods or cash...',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
+    
 
               // Border Box 5: Set Scrap Material Conversion Points
               InkWell(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/barangay_main_screen.dart';
+import 'package:Kariton/barangay_main_screen.dart';
 
 class ReceiptPage extends StatelessWidget {
   final Map data;

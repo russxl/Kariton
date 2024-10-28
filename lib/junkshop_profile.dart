@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -57,9 +57,7 @@ class _ProfileJunkshopState extends State<ProfileJunkshop> {
       // Fetch new data from the API
       var newData = await Api.getHome(context, data);
       // Update the state with new data
-      setState(() {
-        // Update profile data here if needed
-      });
+    
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile data reloaded successfully.')),
@@ -210,10 +208,7 @@ class _ProfileJunkshopState extends State<ProfileJunkshop> {
                 style: const TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 15.0)),
             const SizedBox(height: 8.0),
-            Text(widget.data['junkOwner']['jShopName'] ?? '',
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 10.0, color: Colors.grey)),
+           
             const SizedBox(height: 16.0),
             Center(
               child: ElevatedButton(
@@ -225,7 +220,11 @@ class _ProfileJunkshopState extends State<ProfileJunkshop> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0)),
                 ),
-                child: const Text('Junk Shop Information'),
+               child: const Text(
+  'Junk Shop Information',
+  style: TextStyle(color: Colors.black),
+),
+
               ),
             ),
             const SizedBox(height: 24.0),
@@ -407,13 +406,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile updated successfully!')),
       );
-      Navigator.pop(context, {
-        'name': name,
-        'email': email,
-        'phone': phone,
-        'profileImageFile': _profileImageFile,
-        'profileImageData': _profileImageData,
-      });
+   
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to update profile. Please try again.')),

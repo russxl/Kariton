@@ -1,6 +1,6 @@
 import 'dart:convert'; // Import the convert library to decode Base64
 import 'package:flutter/material.dart';
-import 'package:notirak/community_login_screen.dart';
+import 'package:Kariton/community_login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'barangay_edit_profile.dart'; // Import the EditProfile page

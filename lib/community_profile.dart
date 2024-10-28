@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notirak/community_login_screen.dart';
+import 'package:Kariton/community_login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'community_general_prof.dart'; // Import the new screen
 import 'community_history_screen.dart'; // Import the history screen

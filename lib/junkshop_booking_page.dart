@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:notirak/api/api.dart';
+import 'package:Kariton/api/api.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'junkshop_main.dart'; // Assuming your API call is defined here
 
@@ -91,147 +91,148 @@ class _BookingPageState extends State<BookingPage> {
         print(widget.data['adminscrap'][0]['scrapType']);
     return ListView(
       padding: const EdgeInsets.all(20.0),
-      children: [
-        const Text(
-          'Schedule For Pickup',
-          style: TextStyle(
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          'Choose what time and date',
-          style: TextStyle(
-            fontSize: 16.0,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(height: 20),
+     children: [
+  const Text(
+    'Schedule For Pickup',
+    style: TextStyle(
+      fontSize: 24.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
+  ),
+  const SizedBox(height: 20),
+  Text(
+    'Choose what time and date',
+    style: TextStyle(
+      fontSize: 16.0,
+      color: Colors.black,
+    ),
+  ),
+  const SizedBox(height: 20),
 
-        // Date Picker
-        Text(
-          'Date *',
-          style: TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+  // Date Picker
+  Text(
+    'Date *',
+    style: TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
+  ),
+  const SizedBox(height: 10),
+  GestureDetector(
+    onTap: () async {
+      DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: _selectedDate ?? DateTime.now(),
+        firstDate: DateTime.now(), // Disable past dates
+        lastDate: DateTime(2101),
+      );
+      if (pickedDate != null && pickedDate != _selectedDate) {
+        setState(() {
+          _selectedDate = pickedDate;
+        });
+      }
+    },
+    child: AbsorbPointer(
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: _selectedDate == null
+              ? 'Select Date'
+              : '${_selectedDate!.toLocal()}'.split(' ')[0],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
           ),
         ),
-        const SizedBox(height: 10),
-        GestureDetector(
-          onTap: () async {
-            DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: _selectedDate ?? DateTime.now(),
-              firstDate: DateTime(2000),
-              lastDate: DateTime(2101),
-            );
-            if (pickedDate != null && pickedDate != _selectedDate) {
-              setState(() {
-                _selectedDate = pickedDate;
-              });
-            }
-          },
-          child: AbsorbPointer(
-            child: TextFormField(
-              decoration: InputDecoration(
-                labelText: _selectedDate == null
-                    ? 'Select Date'
-                    : '${_selectedDate!.toLocal()}'.split(' ')[0],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              validator: (value) {
-                if (_selectedDate == null) {
-                  return 'Date is required';
-                }
-                return null;
-              },
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
+        validator: (value) {
+          if (_selectedDate == null) {
+            return 'Date is required';
+          }
+          return null;
+        },
+      ),
+    ),
+  ),
+  const SizedBox(height: 10),
 
-        // Time Picker
-        Text(
-          'Time *',
-          style: TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+  // Time Picker
+  Text(
+    'Time *',
+    style: TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+    ),
+  ),
+  const SizedBox(height: 10),
+  GestureDetector(
+    onTap: () async {
+      TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: _selectedTime ?? TimeOfDay.now(),
+      );
+      if (pickedTime != null && pickedTime != _selectedTime) {
+        setState(() {
+          _selectedTime = pickedTime;
+        });
+      }
+    },
+    child: AbsorbPointer(
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: _selectedTime == null
+              ? 'Select Time'
+              : '${_selectedTime!.format(context)}',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
           ),
         ),
-        const SizedBox(height: 10),
-        GestureDetector(
-          onTap: () async {
-            TimeOfDay? pickedTime = await showTimePicker(
-              context: context,
-              initialTime: _selectedTime ?? TimeOfDay.now(),
-            );
-            if (pickedTime != null && pickedTime != _selectedTime) {
-              setState(() {
-                _selectedTime = pickedTime;
-              });
-            }
-          },
-          child: AbsorbPointer(
-            child: TextFormField(
-              decoration: InputDecoration(
-                labelText: _selectedTime == null
-                    ? 'Select Time'
-                    : '${_selectedTime!.format(context)}',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              validator: (value) {
-                if (_selectedTime == null) {
-                  return 'Time is required';
-                }
-                return null;
-              },
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
+        validator: (value) {
+          if (_selectedTime == null) {
+            return 'Time is required';
+          }
+          return null;
+        },
+      ),
+    ),
+  ),
+  const SizedBox(height: 20),
 
-        ElevatedButton(
-          onPressed: () {
-            if (_selectedDate == null || _selectedTime == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Please select both date and time'),
-                ),
-              );
-            } else {
-              _pageController.nextPage(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeIn,
-              );
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            padding: const EdgeInsets.symmetric(
-              vertical: 18.0,
-              horizontal: 16.0,
-            ),
+  ElevatedButton(
+    onPressed: () {
+      if (_selectedDate == null || _selectedTime == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please select both date and time'),
           ),
-          child: const Text(
-            'Next',
-            style: TextStyle(
-              fontSize: 16.0,
-            ),
-          ),
-        ),
-      ],
+        );
+      } else {
+        _pageController.nextPage(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      }
+    },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.green,
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      padding: const EdgeInsets.symmetric(
+        vertical: 18.0,
+        horizontal: 16.0,
+      ),
+    ),
+    child: const Text(
+      'Next',
+      style: TextStyle(
+        fontSize: 16.0,
+      ),
+    ),
+  ),
+],
+
     );
   }
 
@@ -301,57 +302,63 @@ class _BookingPageState extends State<BookingPage> {
       ),
       const SizedBox(height: 20),
 
-      TextFormField(
-        decoration: InputDecoration(
-          labelText: 'Enter Weight (kg)',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-        ),
-        keyboardType: TextInputType.number,
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')), // Accept only numbers and decimal
-        ],
-        onChanged: (value) {
-          _weight = value;
-        },
-      ),
-      const SizedBox(height: 20),
+   TextFormField(
+  decoration: InputDecoration(
+    labelText: 'Enter Weight (kg)',
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    helperText: 'Note: Pickup request is only allowed for 5000 kg or more.',
+  ),
+  keyboardType: TextInputType.number,
+  inputFormatters: [
+    FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')), // Accept only numbers and decimal
+  ],
+  onChanged: (value) {
+    setState(() {
+      _weight = value;
+    });
+  },
+),
 
-      // Next Button
-      ElevatedButton(
-        onPressed: () {
-          if (_scrapType == null || _weight == null) {
+const SizedBox(height: 20),
+ElevatedButton(
+  onPressed: () {
+    final weightValue = double.tryParse(_weight ?? '0') ?? 0;
+ if (_scrapType == null || _weight == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Please select scrap type and enter weight'),
               ),
             );
-          } else {
-            _pageController.nextPage(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeIn,
-            );
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          padding: const EdgeInsets.symmetric(
-            vertical: 18.0,
-            horizontal: 16.0,
-          ),
+          } 
+    if (weightValue >= 5000) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Pickup request is only allowed for 5000 kg or more.'),
         ),
-        child: const Text(
-          'Next',
-          style: TextStyle(
-            fontSize: 16.0,
-          ),
-        ),
-      ),
+      );
+    }
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.green,
+    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  ),
+  child: const Text('Next', style: TextStyle(fontSize: 16.0)),
+),
+
+      const SizedBox(height: 20),
+
+      // Next Button
+
     ],
   );
 }
@@ -509,11 +516,10 @@ bool _validatePhilippinePhoneNumber(String phone) {
         ),
         const SizedBox(height: 20),
 
-        ElevatedButton(
-          onPressed: () async {
-            // Call API to submit the final data with individual variables
-
-            var data = {
+       ElevatedButton(
+  onPressed: () async {
+    // Prepare the data for the API call
+     var data = {
               "name": _nameController.text,
               "phone": _phoneController.text,
               "date": _selectedDate?.toLocal().toString().split(' ')[0],
@@ -524,26 +530,50 @@ bool _validatePhilippinePhoneNumber(String phone) {
               'id':widget.data['junkOwner']['_id'],
               "location":widget.data['junkOwner']['address']
             };
-           await Api.pickUp(context,data);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            padding: const EdgeInsets.symmetric(
-              vertical: 18.0,
-              horizontal: 16.0,
-            ),
-          ),
-          child: const Text(
-            'Submit',
-            style: TextStyle(
-              fontSize: 16.0,
-            ),
-          ),
+
+    // Call the API to submit the final data
+    final result = await Api.pickUp(context, data);
+
+    if (result) {
+      // Show a success message if the pickup request is successful
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Pending Pickup Request - you can check the status in the history.'),
+          duration: const Duration(seconds: 3),
         ),
+      );
+
+      // Optionally, navigate back or reset the form
+      // Navigator.pop(context); // Uncomment if you want to go back after submission
+    } else {
+      // Handle error if the API call was not successful
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Failed to submit pickup request. Please try again.'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.green,
+    foregroundColor: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8.0),
+    ),
+    padding: const EdgeInsets.symmetric(
+      vertical: 18.0,
+      horizontal: 16.0,
+    ),
+  ),
+  child: const Text(
+    'Submit',
+    style: TextStyle(
+      fontSize: 16.0,
+    ),
+  ),
+),
+
       ],
     );
   }
