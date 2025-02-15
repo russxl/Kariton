@@ -56,7 +56,7 @@ class _RedeemCashScreenState extends State<RedeemCashScreen> {
   @override
   Widget build(BuildContext context) {
     final redeemIsActive = widget.userData['barangay']?['redeemIsActive'] ?? false;
-
+  print(widget.userData['barangay']?['bName']);
     if (!redeemIsActive) {
       return _buildRedemptionUnavailableScreen();
     }

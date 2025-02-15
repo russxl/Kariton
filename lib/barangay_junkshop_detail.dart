@@ -1,3 +1,4 @@
+import 'package:Kariton/barangay_pick_up.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,7 +26,7 @@ class JunkshopDetailScreen extends StatelessWidget {
       return;
     }
 
-    String urlString = '';
+    String urlString = 'https://www.google.com/maps/dir/${brgy}/${address}';
     Uri url = Uri.parse(urlString);
 
     if (!await launchUrl(url)) {
@@ -43,7 +44,7 @@ class JunkshopDetailScreen extends StatelessWidget {
         centerTitle: true,
         title: Text("Junkshop Details"),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,92 +53,89 @@ class JunkshopDetailScreen extends StatelessWidget {
             Text(
               data['junkShop']['jShopName'] ?? 'Unknown Junkshop',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Roboto',
               ),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 20.0),
 
             // Location
             Row(
               children: [
-                Icon(Icons.location_on, color: Colors.grey, size: 20),
+                Icon(Icons.location_on, color: Colors.red, size: 24),
                 SizedBox(width: 8.0),
                 Expanded(
                   child: Text(
                     'Located at ${data['junkShop']['address'] ?? 'Unknown Location'}',
                     style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                       fontFamily: 'Roboto',
-                      color: Colors.grey,
+                      color: Colors.black87,
                     ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 20.0),
 
             // Owner
             Row(
               children: [
-                Icon(Icons.person, color: Colors.grey, size: 20),
+                Icon(Icons.person, color: Colors.blue, size: 24),
                 SizedBox(width: 8.0),
                 Text(
                   data['junkShop']['ownerName'] ?? 'Unknown Owner',
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                     fontFamily: 'Roboto',
-                    color: Colors.grey,
+                    color: Colors.black87,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 20.0),
 
             // Phone
             Row(
               children: [
-                Icon(Icons.call, color: Colors.grey, size: 20),
+                Icon(Icons.call, color: Colors.green, size: 24),
                 SizedBox(width: 8.0),
                 Text(
                   data['junkShop']['phone'] ?? 'No phone number',
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                     fontFamily: 'Roboto',
-                    color: Colors.grey,
+                    color: Colors.black87,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 20.0),
 
             // Email
             Row(
               children: [
-                Icon(Icons.mail, color: Colors.grey, size: 20),
+                Icon(Icons.mail, color: Colors.orange, size: 24),
                 SizedBox(width: 8.0),
                 Text(
                   data['junkShop']['email'] ?? 'No email provided',
                   style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                     fontFamily: 'Roboto',
-                    color: Colors.grey,
+                    color: Colors.black87,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 24.0),
+            SizedBox(height: 30.0),
 
             // Details
             Text(
               'Details',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Roboto',
               ),
@@ -148,10 +146,10 @@ class JunkshopDetailScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontFamily: 'Roboto',
-                color: Colors.grey,
+                color: Colors.black54,
               ),
             ),
-            SizedBox(height: 24.0),
+            SizedBox(height: 30.0),
 
             // Categories Header
             Row(
@@ -160,25 +158,17 @@ class JunkshopDetailScreen extends StatelessWidget {
                 Text(
                   'Categories',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Roboto',
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  child: Text(
-                    'Price',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontFamily: 'Roboto',
-                    ),
+                Text(
+                  'Price',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Roboto',
                   ),
                 ),
               ],
@@ -186,54 +176,84 @@ class JunkshopDetailScreen extends StatelessWidget {
             SizedBox(height: 16.0),
 
             // Categories List
-            Expanded(
-              child: ListView(
-                children: categories.map<Widget>((category) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          category['scrapType'] ?? 'Unknown Type',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Roboto',
-                          ),
+            Column(
+              children: categories.map<Widget>((category) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        category['scrapType'] ?? 'Unknown Type',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto',
                         ),
-                        Text(
-                          category['pointsEquivalent'].toString() ?? '0',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Roboto',
-                            color: Colors.grey,
-                          ),
+                      ),
+                      Text(
+                        '${category['pointsEquivalent'].toString()} Points',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: 'Roboto',
+                          color: Colors.black87,
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
-            SizedBox(height: 24.0),
+            SizedBox(height: 30.0),
 
             // Directions Button
             GestureDetector(
               onTap: () => _openDirections(context),
               child: Row(
                 children: [
-                  Icon(Icons.directions, color: Colors.grey, size: 20),
+                  Icon(Icons.directions, color: Colors.blue, size: 24),
                   SizedBox(width: 8.0),
                   Text(
-                    'Directions',
+                    'Get Directions',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',
+                      color: Colors.blue,
                     ),
                   ),
                 ],
+              ),
+            ),
+            SizedBox(height: 20.0),
+
+            // Set Pickup Schedule Button
+            GestureDetector(
+              onTap: () {
+                // Handle the pickup schedule action
+                 Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BarangayBookingPage(data: data)),
+                      );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Center(
+                  child: Text(
+                    'Set Pickup Schedule',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

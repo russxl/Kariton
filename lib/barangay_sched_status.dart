@@ -1,41 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:Kariton/api/api.dart';
 
-class BarangayNotificationScreen extends StatefulWidget {
-  final Map data;
+class BarangayPickUpScheduleScreen extends StatefulWidget {
+  final Map<dynamic, dynamic> data;
 
-  const BarangayNotificationScreen({Key? key, required this.data}) : super(key: key);
+  const BarangayPickUpScheduleScreen({Key? key, required this.data}) : super(key: key);
 
   @override
-  _BarangayNotificationScreenState createState() => _BarangayNotificationScreenState();
+  _BarangayPickUpScheduleScreenState createState() => _BarangayPickUpScheduleScreenState();
 }
 
-class _BarangayNotificationScreenState extends State<BarangayNotificationScreen> {
-  late List<dynamic> userLogs;
+class _BarangayPickUpScheduleScreenState extends State<BarangayPickUpScheduleScreen> {
+  late List<Map<String, dynamic>> pickUpRequests;
 
-  @override
-  void initState() {
-    super.initState();
-    userLogs = widget.data['userLogs'] ?? [];
-  }
+ @override
+void initState() {
+  super.initState();
+  // Filter out requests with status 'Done'
+  pickUpRequests = List<Map<String, dynamic>>.from(widget.data['pickup'] ?? [])
+      .where((request) => request['status'] != 'Done')
+      .toList();
+}
 
   Future<void> _refreshData() async {
-    var requestData = {
-      "id": widget.data['barangay']['_id'],
-      "type": "Barangay"
-    };
+    if (widget.data['pickup'] != null && widget.data['pickup'].isNotEmpty) {
+      var requestData = {
+        "id": widget.data['barangay']['_id'],
+        "type": "Barangay"
+      };
 
-    try {
-      final updatedData = await Api.getHome(context, requestData);
-      // Update the state with the refreshed data
-    } catch (error) {
-      print("Error refreshing data: $error");
+      try {
+        final updatedData = await Api.getHome(context, requestData);
+        
+      } catch (error) {
+        print("Error refreshing data: $error");
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> reversedUserLogs = userLogs.reversed.toList();
+    List<Map<String, dynamic>> reversedPickUpRequests = pickUpRequests.reversed.toList();
 
     return Scaffold(
       body: Padding(
@@ -46,7 +51,7 @@ class _BarangayNotificationScreenState extends State<BarangayNotificationScreen>
             // Centered Title
             Center(
               child: Text(
-                'Notification',
+                'Pick-Up Schedule Status',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -57,26 +62,14 @@ class _BarangayNotificationScreenState extends State<BarangayNotificationScreen>
             ),
             const SizedBox(height: 10.0),
 
-            // Left-aligned Latest Text
-            Text(
-              'Latest',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF40A858),
-                fontFamily: 'Roboto',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-
             // Notification Content
             Expanded(
               child: RefreshIndicator(
                 onRefresh: _refreshData,
                 child: ListView.builder(
-                  itemCount: reversedUserLogs.length,
+                  itemCount: reversedPickUpRequests.length,
                   itemBuilder: (context, index) {
-                    var log = reversedUserLogs[index];
+                    var request = reversedPickUpRequests[index];
 
                     // Assigning a color based on index for variety
                     final backgroundColor = index % 2 == 0
@@ -100,14 +93,18 @@ class _BarangayNotificationScreenState extends State<BarangayNotificationScreen>
                       ),
                       child: Row(
                         children: [
-                          // Icon based on log type
+                          // Icon based on request status
                           Icon(
-                            log['type'] == 'Alert'
-                                ? Icons.warning
-                                : Icons.notifications,
-                            color: log['type'] == 'Alert'
-                                ? Colors.redAccent
-                                : Color(0xFF40A858),
+                            request['status'] == 'Pending'
+                                ? Icons.hourglass_empty
+                                : request['status'] == 'Done'
+                                    ? Icons.check_circle
+                                    : Icons.schedule,
+                            color: request['status'] == 'Pending'
+                                ? Colors.orangeAccent
+                                : request['status'] == 'Done'
+                                    ? Colors.green
+                                    : Color(0xFF40A858),
                             size: 30,
                           ),
                           const SizedBox(width: 12.0),
@@ -119,7 +116,7 @@ class _BarangayNotificationScreenState extends State<BarangayNotificationScreen>
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      log['date'] ?? 'Unknown date',
+                                      request['setScheduledDate'] ?? 'Unknown date',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.normal,
@@ -128,13 +125,15 @@ class _BarangayNotificationScreenState extends State<BarangayNotificationScreen>
                                       ),
                                     ),
                                     Text(
-                                      log['type'] ?? 'General',
+                                      request['status'] ?? 'Status unknown',
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
-                                        color: log['type'] == 'Alert'
-                                            ? Colors.redAccent
-                                            : Color(0xFF40A858),
+                                        color: request['status'] == 'Pending'
+                                            ? Colors.orangeAccent
+                                            : request['status'] == 'Completed'
+                                                ? Colors.green
+                                                : Color(0xFF40A858),
                                         fontFamily: 'Roboto',
                                       ),
                                     ),
@@ -142,7 +141,7 @@ class _BarangayNotificationScreenState extends State<BarangayNotificationScreen>
                                 ),
                                 const SizedBox(height: 8.0),
                                 Text(
-                                  log['time'] ?? 'Unknown time',
+                                  request['scrapType'] ?? 'Unknown time',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -152,7 +151,7 @@ class _BarangayNotificationScreenState extends State<BarangayNotificationScreen>
                                 ),
                                 const SizedBox(height: 8.0),
                                 Text(
-                                  log['logs'] ?? 'No details available',
+                                  request['time'] ?? 'No details available',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.normal,
@@ -176,4 +175,3 @@ class _BarangayNotificationScreenState extends State<BarangayNotificationScreen>
     );
   }
 }
-     

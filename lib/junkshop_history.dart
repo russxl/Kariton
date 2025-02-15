@@ -24,7 +24,6 @@ class _HistoryJunkshopState extends State<HistoryJunkshop> {
   }
 
   void _initializeData() {
-    // Extract and reverse data from widget.data to display latest first
     pendingData = List<Map<dynamic, dynamic>>.from(widget.data['pending'] ?? []).reversed.toList();
     declinedData = List<Map<dynamic, dynamic>>.from(widget.data['declined'] ?? []).reversed.toList();
     approvedData = List<Map<dynamic, dynamic>>.from(widget.data['approved'] ?? []).reversed.toList();
@@ -32,23 +31,19 @@ class _HistoryJunkshopState extends State<HistoryJunkshop> {
   }
 
   Future<void> _reloadData() async {
-    // Prepare data for API call
     var data = {
       "id": widget.data['junkOwner']['_id'],
       'type': "Junkshop",
     };
 
-    // Fetch new data from the API
     await Api.getHome(context, data);
 
-    // Re-initialize data after fetching
     setState(() {
       _initializeData();
     });
 
-    // Show a message indicating successful refresh
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Scraps list saved successfully.')),
+      const SnackBar(content: Text('Scraps list refreshed successfully.')),
     );
   }
 
@@ -56,51 +51,71 @@ class _HistoryJunkshopState extends State<HistoryJunkshop> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         centerTitle: true,
         title: const Text(
           'History',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.green,
+            color: Colors.white,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: _reloadData,
+          ),
+        ],
       ),
       body: Column(
         children: [
-          BottomNavigationBar(
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.check_circle),
-                label: 'Approve',
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.green.shade100,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.hourglass_empty),
-                label: 'Pending',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.cancel),
-                label: 'Cancelled',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.history),
-                label: 'History',
-              ),
-            ],
-            currentIndex: _selectedIndex,
-            onTap: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: Colors.green,
-            backgroundColor: Colors.white,
+            ),
+            child: BottomNavigationBar(
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.check_circle),
+                  label: 'Approved',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.hourglass_empty),
+                  label: 'Pending',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.cancel),
+                  label: 'Cancelled',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.done_all),
+                  label: 'Done',
+                ),
+              ],
+              currentIndex: _selectedIndex,
+              onTap: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: Colors.green.shade800,
+              unselectedItemColor: Colors.green.shade600,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
           ),
           Expanded(
             child: RefreshIndicator(
-              onRefresh: _reloadData, // Link to the refresh function
-              child: _buildContent(),
+              onRefresh: _reloadData,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: _buildContent(),
+              ),
             ),
           ),
         ],
@@ -113,27 +128,36 @@ class _HistoryJunkshopState extends State<HistoryJunkshop> {
     String title;
 
     if (_selectedIndex == 1) {
-      // Pending records
       currentData = pendingData;
       title = 'Pending Records';
     } else if (_selectedIndex == 0) {
-      // Approved records
       currentData = approvedData;
       title = 'Approved Records';
     } else if (_selectedIndex == 2) {
-      // Declined records
       currentData = declinedData;
       title = 'Declined Records';
     } else {
-      // Done records
       currentData = doneData;
       title = 'Done Records';
     }
 
+    if (currentData.isEmpty) {
+      return Center(
+        key: ValueKey<int>(_selectedIndex),
+        child: const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            'No records found',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
     return ListView(
+      key: ValueKey<int>(_selectedIndex),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       children: [
-        // Header
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(
@@ -142,8 +166,9 @@ class _HistoryJunkshopState extends State<HistoryJunkshop> {
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  color: Colors.green,
                 ),
               ),
               IconButton(
@@ -155,25 +180,26 @@ class _HistoryJunkshopState extends State<HistoryJunkshop> {
             ],
           ),
         ),
-        // Data Table wrapped in a SingleChildScrollView for horizontal scrolling
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
+            headingRowColor: MaterialStateProperty.all(Colors.green.shade50),
+            dataRowColor: MaterialStateProperty.all(Colors.white),
             columns: const [
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Location')),
-              DataColumn(label: Text('Phone No.')),
-              DataColumn(label: Text('Weight')),
-              DataColumn(label: Text('Scrap Type')),
+              DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Location', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Phone No.', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Weight', style: TextStyle(fontWeight: FontWeight.bold))),
+              DataColumn(label: Text('Scrap Type', style: TextStyle(fontWeight: FontWeight.bold))),
             ],
             rows: currentData.map((record) {
               return DataRow(
                 cells: [
-                  DataCell(Text(record['name'] ?? '')),
-                  DataCell(Text(record['location'] ?? '')),
-                  DataCell(Text(record['phone'] ?? '')),
-                  DataCell(Text("${record['weight'] ?? ''} KG")),
-                  DataCell(Text(record['scrapType'] ?? '')),
+                  DataCell(Text(record['name'] ?? '', style: const TextStyle(color: Colors.black87))),
+                  DataCell(Text(record['location'] ?? '', style: const TextStyle(color: Colors.black87))),
+                  DataCell(Text(record['phone'] ?? '', style: const TextStyle(color: Colors.black87))),
+                  DataCell(Text("${record['weight'] ?? ''} KG", style: const TextStyle(color: Colors.black87))),
+                  DataCell(Text(record['scrapType'] ?? '', style: const TextStyle(color: Colors.black87))),
                 ],
               );
             }).toList(),

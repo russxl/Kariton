@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'junkshop_notification.dart'; 
-import 'junkshop_history.dart'; 
+import 'junkshop_notification.dart';
+import 'junkshop_history.dart';
 import 'junkshop_profile.dart';
 
 class SetPriceJunkshop extends StatefulWidget {
@@ -27,13 +27,13 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
         case 1:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) =>  NotificationJunkshop(data:widget.data)),
+            MaterialPageRoute(builder: (context) => NotificationJunkshop(data: widget.data)),
           );
           break;
         case 2:
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) =>  HistoryJunkshop(data:widget.data)),
+            MaterialPageRoute(builder: (context) => HistoryJunkshop(data: widget.data)),
           );
           break;
         case 3:
@@ -67,7 +67,13 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit Scrap'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: Text(
+            'Edit Scrap',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -76,7 +82,7 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
                 decoration: InputDecoration(
                   labelText: 'Scrap Name',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                 ),
               ),
@@ -86,7 +92,7 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
                 decoration: InputDecoration(
                   labelText: 'Price per Kilo (₱)',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                 ),
                 keyboardType: TextInputType.number,
@@ -98,7 +104,10 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.redAccent),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -112,6 +121,9 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
               ),
               child: Text('Save'),
             ),
@@ -125,67 +137,72 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         title: const Text(
           'Set Price',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.green,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
       ),
-      body: ListView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Add Scrap',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _scrapNameController,
-                  decoration: InputDecoration(
-                    labelText: 'Scrap Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: _priceController,
-                  decoration: InputDecoration(
-                    labelText: 'Price per Kilo (₱)',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-                SizedBox(height: 20),
-                Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              elevation: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: _addScrap,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
+                    Text(
+                      'Add Scrap',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _scrapNameController,
+                      decoration: InputDecoration(
+                        labelText: 'Scrap Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: _priceController,
+                      decoration: InputDecoration(
+                        labelText: 'Price per Kilo (₱)',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: _addScrap,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15.0),
+                        child: Center(
                           child: Text(
                             'Add Scrap',
                             style: TextStyle(
@@ -199,70 +216,70 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'Added Scraps',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Added Scraps',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
+            ),
+            SizedBox(height: 10),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: scraps.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  elevation: 3,
+                  child: ListTile(
+                    title: Text(
+                      scraps[index]['name'],
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text('₱${scraps[index]['price']} per kilo'),
+                    trailing: IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () => _editScrap(index),
+                      color: Colors.green,
+                    ),
+                  ),
+                );
+              },
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Handle the save action here
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: Center(
+                  child: Text(
+                    'Save',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-                SizedBox(height: 10),
-                ListView.builder(
-                  shrinkWrap: true, 
-                  physics: NeverScrollableScrollPhysics(), 
-                  itemCount: scraps.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(scraps[index]['name']),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('₱${scraps[index]['price']} per kilo'),
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () => _editScrap(index),
-                            color: Colors.green,
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Handle the save action here
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                          child: Text(
-                            'Save',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -287,10 +304,11 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
-        selectedLabelStyle: TextStyle(color: Colors.black),
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
         unselectedLabelStyle: TextStyle(color: Colors.grey),
-        selectedItemColor: Colors.black,
+        selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
       ),
     );
   }

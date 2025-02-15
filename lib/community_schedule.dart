@@ -26,32 +26,53 @@ class ScheduleDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Schedule Details'),
+        centerTitle: true,
+        backgroundColor: Colors.green[600],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
               day,
-              style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8.0),
-            Text('Location: $location'),
-            Text('Time: $time'),
-            Text('Scrap Type: $scrapType'),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 10.0),
+            Text(
+              'Location: $location',
+              style: TextStyle(fontSize: 18.0, color: Colors.green[900]),
+            ),
+            const SizedBox(height: 5.0),
+            Text(
+              'Time: $time',
+              style: TextStyle(fontSize: 18.0, color: Colors.green[900]),
+            ),
+            const SizedBox(height: 5.0),
+            Text(
+              'Scrap Type: $scrapType',
+              style: TextStyle(fontSize: 18.0, color: Colors.green[900]),
+            ),
+            const Divider(height: 20.0, thickness: 1.5),
             const Text(
               'Description:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
             ),
-            Text(description),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 5.0),
+            Text(
+              description,
+              style: TextStyle(fontSize: 16.0, color: Colors.grey[700]),
+            ),
+            const Divider(height: 20.0, thickness: 1.5),
             const Text(
               'Long Description:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
             ),
-            Text(longDescription),
+            const SizedBox(height: 5.0),
+            Text(
+              longDescription,
+              style: TextStyle(fontSize: 16.0, color: Colors.grey[700]),
+            ),
           ],
         ),
       ),
@@ -62,7 +83,6 @@ class ScheduleDetailsScreen extends StatelessWidget {
 class ScheduleScreen extends StatefulWidget {
   final Map userData;
 
-  // Define userData as a field
   ScheduleScreen({
     required this.userData,
   });
@@ -77,7 +97,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   @override
   void initState() {
     super.initState();
-    // Initializing with userData's collection data
     collection = widget.userData['collection'] ?? [];
   }
 
@@ -88,13 +107,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     };
 
     try {
-      // Assuming Api.getHome returns a Future with the refreshed data
       final updatedData = await Api.getHome(context, requestData);
-
-      // Update the data state and refresh the schedule list
-  
     } catch (error) {
-      // Handle the error (show message, log, etc.)
       print("Error refreshing data: $error");
     }
   }
@@ -108,13 +122,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        backgroundColor: Colors.green[600],
       ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: collection.isEmpty
             ? _buildNoScheduleMessage()
             : ListView.builder(
-                padding: const EdgeInsets.all(30.0),
+                padding: const EdgeInsets.all(16.0),
                 itemCount: collection.length,
                 itemBuilder: (context, index) {
                   final item = collection[index];
@@ -153,16 +168,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }) {
     return GestureDetector(
       onTap: () {
-        // Navigate to ScheduleDetailsScreen when tapped
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ScheduleDetailsScreen(
               day: day,
-              location: 'Unknown', // You can add this information if available
+              location: 'Unknown',
               time: time,
               scrapType: scrapType,
-              description: 'Short description', // Add a proper description here
+              description: 'Brief description here', // Add proper description
               longDescription: longDescription,
               userData: widget.userData,
             ),
@@ -171,35 +185,48 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.grey[400]!,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
         margin: const EdgeInsets.only(bottom: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
+              children: [
                 Text(
                   day,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18.0,
+                    color: Colors.green,
                   ),
                 ),
+                Icon(Icons.calendar_today, color: Colors.green[700], size: 18.0),
               ],
             ),
             const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('Time: $time'),
-                Text('Scrap Type: $scrapType'),
+                Text(
+                  'Time: $time',
+                  style: TextStyle(fontSize: 16.0, color: Colors.grey[800]),
+                ),
+                Text(
+                  'Scrap Type: $scrapType',
+                  style: TextStyle(fontSize: 16.0, color: Colors.grey[800]),
+                ),
               ],
             ),
           ],

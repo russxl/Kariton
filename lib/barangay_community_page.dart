@@ -56,7 +56,7 @@ class CommunityPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Set Schedule',
+                        'Set/View Collection Schedule',
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 10),

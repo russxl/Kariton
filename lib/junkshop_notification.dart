@@ -18,7 +18,7 @@ class NotificationJunkshop extends StatelessWidget {
     
     // Show a message indicating successful refresh
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Scraps list saved successfully.')),
+      const SnackBar(content: Text('Scraps list updated successfully.')),
     );
   }
 
@@ -33,15 +33,16 @@ class NotificationJunkshop extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green,
         title: const Text(
-          'Notification',
+          'Notifications',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.green,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
+        elevation: 0,
       ),
       body: RefreshIndicator(
         onRefresh: () => _refreshData(context), // Link to the refresh function
@@ -51,27 +52,37 @@ class NotificationJunkshop extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'New',
+                'Recent Updates',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                  color: Colors.black,
+                  fontSize: 24.0,
+                  color: Colors.black87,
                 ),
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                itemCount: reversedLogs.length, // Length of reversedLogs
-                itemBuilder: (context, index) {
-                  // For each log, display a notification tile
-                  var log = reversedLogs[index];
-                  return _buildNotificationTile(
-                    title: log['logs'] ?? 'No Title', // Title from log
-                    subtitle: 'Date: ${log['date'] ?? 'Unknown'} - ${log['scrapType'] ?? 'No Scrap Type'}',
-                  );
-                },
-              ),
+              child: reversedLogs.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No new notifications',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      itemCount: reversedLogs.length, // Length of reversedLogs
+                      itemBuilder: (context, index) {
+                        // For each log, display a notification tile
+                        var log = reversedLogs[index];
+                        return _buildNotificationTile(
+                          title: log['logs'] ?? 'No Title', // Title from log
+                          subtitle: 'Date: ${log['date'] ?? 'Unknown'} - ${log['scrapType'] ?? 'No Scrap Type'}',
+                        );
+                      },
+                    ),
             ),
           ],
         ),
@@ -84,28 +95,40 @@ class NotificationJunkshop extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.05),
             spreadRadius: 2,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.3),
-          width: 1.0,
-        ),
       ),
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        leading: CircleAvatar(
+          backgroundColor: Colors.green,
+          child: Icon(
+            Icons.notifications,
+            color: Colors.white,
+          ),
+        ),
         title: Text(
           title,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
+            fontSize: 16.0,
+            color: Colors.black87,
           ),
         ),
-        subtitle: Text(subtitle),
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14.0,
+          ),
+        ),
       ),
     );
   }

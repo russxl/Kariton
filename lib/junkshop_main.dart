@@ -1,3 +1,4 @@
+import 'package:Kariton/junkshop_scrap_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:Kariton/api/api.dart';
 import 'package:Kariton/community_login_screen.dart';
@@ -74,15 +75,18 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
     // Main content
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.green[700],
         automaticallyImplyLeading: false, // Remove back button
         title: const Text(
           'KARITON',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.green,
+            color: Colors.white,
           ),
         ),
+        actions: [
+          
+        ],
       ),
       body: PageView(
         controller: _pageController,
@@ -96,7 +100,7 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
           RefreshIndicator(
             onRefresh: _refreshData,
             child: ListView(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
               children: <Widget>[
                 Align(
                   alignment: Alignment.topLeft,
@@ -104,18 +108,20 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
                     'Hello, ${data['junkOwner']['ownerName']}',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 24.0,
+                      fontSize: 28.0,
+                      color: Colors.black87,
                     ),
                   ),
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 24.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     _buildActionContainer(
                       context,
                       icon: Icons.attach_money,
-                      label: 'Set Price',
+                      label: 'Set Scrap Price for Barangay',
+                      color: Colors.orangeAccent,
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -125,10 +131,24 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 16.0),
+                    const SizedBox(height: 20.0),
+                    _buildActionContainer(
+                      context,
+                      icon: Icons.list,
+                      label: 'AJCD Scrap Pricelist',
+                      color: Colors.blueAccent,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScrapPriceScreen(data: data),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 24.0),
                 const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
@@ -136,6 +156,7 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24.0,
+                      color: Colors.black87,
                     ),
                   ),
                 ),
@@ -150,22 +171,21 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.green,
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      side: const BorderSide(
-                        color: Colors.green,
-                        width: 2.0,
-                      ),
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                     padding: const EdgeInsets.symmetric(
-                        vertical: 18.0, horizontal: 16.0),
+                      vertical: 18.0,
+                      horizontal: 24.0,
+                    ),
                   ),
                   child: const Text(
                     'Schedule Now',
                     style: TextStyle(
-                      fontSize: 14.0,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -200,11 +220,11 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedLabelStyle: const TextStyle(color: Colors.black),
-        unselectedLabelStyle: const TextStyle(color: Colors.grey),
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.green[700],
+        selectedLabelStyle: const TextStyle(color: Colors.white),
+        unselectedLabelStyle: const TextStyle(color: Colors.white70),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
       ),
     );
   }
@@ -216,7 +236,7 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Icon(Icons.hourglass_empty, size: 100, color: Colors.green),
+            const Icon(Icons.hourglass_empty, size: 100, color: Colors.orangeAccent),
             const SizedBox(height: 24),
             const Text(
               'Your account is under review.',
@@ -245,7 +265,7 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Set your button color
+                backgroundColor: Colors.orangeAccent,
                 padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
               ),
               child: _isLoading // Show loading spinner if loading
@@ -266,44 +286,45 @@ class _JunkshopMainScreenState extends State<JunkshopMainScreen> {
   Widget _buildActionContainer(BuildContext context,
       {required IconData icon,
       required String label,
+      required Color color,
       required VoidCallback onPressed}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          color: Colors.black,
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.1),
             spreadRadius: 2.0,
-            blurRadius: 6.0,
+            blurRadius: 8.0,
             offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          IconButton(
-            icon: Icon(
-              icon,
-              color: Colors.green.withOpacity(0.7),
-              size: 32.0,
-            ),
-            onPressed: onPressed,
+          Icon(
+            icon,
+            color: color,
+            size: 36.0,
           ),
-          const SizedBox(height: 8.0),
-          Text(
-            label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.0,
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
+                color: Colors.black87,
+              ),
             ),
+          ),
+          IconButton(
+            icon: Icon(Icons.arrow_forward_ios, color: color),
+            onPressed: onPressed,
           ),
         ],
       ),

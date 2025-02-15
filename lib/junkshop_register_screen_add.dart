@@ -222,6 +222,69 @@ class _RegisterJunkshopAddFormState extends State<RegisterJunkshopAddForm> {
                     _showMissingAddressAlert(context);
                   } else {
                     // Proceed with registration process
+
+                       var data = {
+                      'userType': widget.userType,
+                      'password': widget.password,
+                      'email': widget.email,
+                      'confirmPassword': widget.confirmPassword,
+                      'phone': widget.phone,
+                      'address': _addressController.text,
+                      'ownerName': widget.captainName,
+                      'junkShopName': widget.junkshopName,
+                    };
+
+                    File? junkshopImageFile;
+                    String? validIdImageBase64;
+                    String? barangayPermitImageBase64;
+
+                    // Check image sizes before processing
+                    if (_junkshopImage != null) {
+                      junkshopImageFile = File(_junkshopImage!.path);
+                      int junkshopImageSize = await junkshopImageFile.length();
+                      if (junkshopImageSize > 3 * 1024 * 1024) { // Check if greater than 3MB
+                        _showImageSizeAlert(context, 'Junkshop Photo');
+                        return;
+                      }
+                      data['junkshopImage'] = base64Encode(await junkshopImageFile.readAsBytes());
+                    }
+                    if (_validIdImage != null) {
+                      File validIdImageFile = File(_validIdImage!.path);
+                      int validIdImageSize = await validIdImageFile.length();
+                      if (validIdImageSize > 3 * 1024 * 1024) { // Check if greater than 3MB
+                        _showImageSizeAlert(context, 'Valid ID');
+                        return;
+                      }
+                      validIdImageBase64 = base64Encode(await validIdImageFile.readAsBytes());
+                      data['validIdImage'] = validIdImageBase64;
+                    }
+                    if (_barangayPermitImage != null) {
+                      File barangayPermitImageFile = File(_barangayPermitImage!.path);
+                      int barangayPermitImageSize = await barangayPermitImageFile.length();
+                      if (barangayPermitImageSize > 3 * 1024 * 1024) { // Check if greater than 3MB
+                        _showImageSizeAlert(context, 'Barangay Permit');
+                        return;
+                      }
+                      barangayPermitImageBase64 = base64Encode(await barangayPermitImageFile.readAsBytes());
+                      data['barangayPermit'] = barangayPermitImageBase64;
+                    }
+
+                    // Show the registration progress dialog
+                    _showRegistrationDialog(context);
+
+                    try {
+                      bool isSuccess = await Api.registrationJunkshop(context, data, junkshopImageFile!);
+                      Navigator.of(context).pop(); // Close the loading dialog
+                      if (isSuccess) {
+                        _showSuccessDialog(context);
+                      } else {
+                        // If registration fails, show the error dialog with a dynamic message
+                        throw Exception('Registration failed. Please check your entered credentials or email is already used.');
+                      }
+                    } catch (e) {
+                      Navigator.of(context).pop(); // Close the loading dialog if there's an error
+                      _showErrorDialog(context, e.toString()); // Pass the error message to the dialog
+                    }
                   }
                 }
               },
@@ -261,7 +324,88 @@ class _RegisterJunkshopAddFormState extends State<RegisterJunkshopAddForm> {
       ],
     );
   }
+  void _showImageSizeAlert(BuildContext context, String imageType) {
+    _showAlertDialog(
+      context,
+      'Image Size Too Large',
+      '$imageType exceeds the size limit of 3MB. Please upload a smaller image.',
+    );
+  }
 
+
+ void _showRegistrationDialog(BuildContext context) {
+    _showLoadingDialog(context, 'Registering your barangay...');
+  }
+void _showSuccessDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Registration Successful'),
+        content: Text('Your barangay has been successfully registered.'),
+        actions: <Widget>[
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog first
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()), // Navigate to LoginScreen
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+void _showLoadingDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
+
+  void _showErrorDialog(BuildContext context, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Registration Failed'),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   void _pickImage({required bool isJunkshopImage, bool isBarangayPermit = false}) async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);

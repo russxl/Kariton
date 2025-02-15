@@ -102,7 +102,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             TextField(
               controller: _barangayCaptainController,
               decoration: InputDecoration(
-                labelText: 'Barangay Captain Name',
+                labelText: 'Barangay Chairman',
                 border: OutlineInputBorder(),
               ),
             ),

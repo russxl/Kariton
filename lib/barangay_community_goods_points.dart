@@ -158,32 +158,52 @@ class _BarangayCommunityGoodsPointsState
                                     }
                                   },
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-  // Copy the data before removing it from the list
-  var goodsData = {
-    "name": _goodsList[index]['goods'],
-    "conversion_rate": _goodsList[index]['points'].toString(),
-    "id": widget.data['barangay']['_id'],
-    "action":"Delete"
-  };
+                               IconButton(
+  icon: const Icon(Icons.delete, color: Colors.red),
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: const Text("Are you sure you want to delete this good?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Close the dialog without action
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog before deleting
 
-  // Perform async operations outside of setState
-  Api.saveGoodsConversion(context, goodsData).then((_) {
-    setState(() {
-      // Now safely remove the item from the list
-      _goodsList.removeAt(index);
-    });
-  }).catchError((error) {
-    // Handle any errors, e.g., show a Snackbar or AlertDialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: $error')),
+                // Data to be sent for deletion
+                var goodsData = {
+                  "name": _goodsList[index]['goods'],
+                  "conversion_rate": _goodsList[index]['points'].toString(),
+                  "id": widget.data['barangay']['_id'],
+                  "action": "Delete"
+                };
+
+                // Call the API and remove the item from the list if successful
+                Api.saveGoodsConversion(context, goodsData).then((_) {
+                  setState(() {
+                    _goodsList.removeAt(index);
+                  });
+                }).catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: $error')),
+                  );
+                });
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
     );
-  });
-}
+  },
+)
 
-                                ),
                               ],
                             ),
                           ),

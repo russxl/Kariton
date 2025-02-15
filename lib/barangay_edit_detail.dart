@@ -52,14 +52,7 @@ class _EditBarangayDetailsPageState extends State<EditBarangayDetailsPage> {
     return null;
   }
 
-  String? _getPermitImageFromBase64() {
-    // Get base64 image for permit and decode it
-    String? base64Image = widget.data['barangay']['permit'];
-    if (base64Image != null && base64Image.isNotEmpty) {
-      return base64Image;
-    }
-    return null;
-  }
+ 
 
   String? _getValidIDImageFromBase64() {
     // Get base64 image for valid ID and decode it
@@ -105,7 +98,7 @@ class _EditBarangayDetailsPageState extends State<EditBarangayDetailsPage> {
 
     // Show a loading indicator while processing
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Saving changes...')),
+      SnackBar(content: Text('Saving changes you will be redirected to home...')),
     );
 
     // Convert base64 image to file if available
@@ -139,7 +132,6 @@ class _EditBarangayDetailsPageState extends State<EditBarangayDetailsPage> {
   @override
   Widget build(BuildContext context) {
     String? base64Image = _getImageFromBase64();
-    String? base64PermitImage = _getPermitImageFromBase64();
     String? base64ValidIDImage = _getValidIDImageFromBase64();
 
     return Scaffold(
@@ -221,39 +213,9 @@ class _EditBarangayDetailsPageState extends State<EditBarangayDetailsPage> {
                   ),
                   
                   // Permit Image
-                  Text(
-                    'Permit',
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                  ),
+              
                   SizedBox(height: 10.0),
-                  Stack(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 200.0,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8.0),
-                          image: base64PermitImage != null
-                              ? DecorationImage(
-                                  image: MemoryImage(
-                                    base64Decode(base64PermitImage),
-                                  ),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                        ),
-                        child: (base64PermitImage == null)
-                            ? Center(
-                                child: Text(
-                                  'No Image Selected',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              )
-                            : null,
-                      ),
-                    ],
-                  ),
+                
 
                   // Valid ID Image
                   Text(

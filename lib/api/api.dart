@@ -20,7 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Api {
- static const baseUrl = "http://192.168.123.53/api/";
+ static const baseUrl = "https://kariton-mobile-server-1.onrender.com/api/";
 static Future<void> authenticationCommunity(BuildContext context, Map pdata) async {
   var url = Uri.parse("${baseUrl}login");
   print("$pdata hi");
@@ -429,33 +429,54 @@ static Future<bool> collectScrap(BuildContext context, Map pdata) async {
 }
  static Future<bool> pickUp(BuildContext context, Map pdata) async {
   var url = Uri.parse("${baseUrl}pickUp");
-  print("$pdata hi");
+ 
+Map<String, String> stringifiedData = pdata.map((key, value) => MapEntry(key, value.toString()));
 
-  // Convert all values in pdata to String
-  Map<String, String> stringifiedData = pdata.map((key, value) => MapEntry(key, value.toString()));
-  
-  try {
-    final res = await http.post(url, body: stringifiedData);
+try {
+  final res = await http.post(url, body: stringifiedData);
 
-    if (res.statusCode == 200) {
-      final data = jsonDecode(res.body.toString());
-      print(data['message']);
+  if (res.statusCode == 200) {
+    final data = jsonDecode(res.body.toString());
+    print(data['message']);
+
+    String userType = pdata['usertype'] ?? '';
+
+    // Navigate to respective screens based on user type
+    if (userType == 'Resident') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainScreen(data: data),
+        ),
+      );
+    } else if (userType == 'Barangay') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BarangayMainScreen(data: data),
+        ),
+      );
+    } else if (userType == 'Junkshop') {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => JunkshopMainScreen(data: data),
         ),
       );
-      return true; // Indicate success
     } else {
-      final data = jsonDecode(res.body.toString());
-      print(data['message']);
-      throw Exception("Failed to authenticate");
+      throw Exception("Unknown user type");
     }
-  } catch (e) {
-    debugPrint(e.toString());
-    return false; // Indicate failure
+
+    return true; // Indicate success
+  } else {
+    final data = jsonDecode(res.body.toString());
+    print(data['message']);
+    throw Exception("Failed to authenticate");
   }
+} catch (e) {
+  debugPrint(e.toString());
+  return false; // Indicate failure
+}
 }
 
  static Future<void> junkShopList(BuildContext context, Map id) async {

@@ -528,7 +528,8 @@ bool _validatePhilippinePhoneNumber(String phone) {
               "weight": _weight,
               "comments": _commentsController.text,
               'id':widget.data['junkOwner']['_id'],
-              "location":widget.data['junkOwner']['address']
+              "location":widget.data['junkOwner']['address'],
+              "usertype":"Junkshop"
             };
 
     // Call the API to submit the final data

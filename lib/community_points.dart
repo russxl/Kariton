@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:Kariton/api/api.dart';
 import 'community_redeem_cash_screen.dart';
 import 'community_redeem_goods_screen.dart';
-import 'community_scrap_points_screen.dart'; // Import the new screen
+import 'community_scrap_points_screen.dart';
 
 class PointsScreen extends StatefulWidget {
-  final Map userData; // Add this field to accept data
+  final Map userData;
 
   const PointsScreen({Key? key, required this.userData}) : super(key: key);
 
@@ -14,7 +14,6 @@ class PointsScreen extends StatefulWidget {
 }
 
 class _PointsScreenState extends State<PointsScreen> {
- 
   Future<void> _refreshData() async {
     var requestData = {
       "id": widget.userData['user']['_id'],
@@ -22,21 +21,15 @@ class _PointsScreenState extends State<PointsScreen> {
     };
 
     try {
-      // Assuming Api.getHome returns a Future with the refreshed data
       final updatedData = await Api.getHome(context, requestData);
-
-      // Update the data state with refreshed data
-     
     } catch (error) {
-      // Handle the error (show message, log, etc.)
       print("Error refreshing data: $error");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var name = widget.userData['user']['points'];
-    var points =  widget.userData['user']['points'];
+    var points = widget.userData['user']['points'];
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -44,6 +37,8 @@ class _PointsScreenState extends State<PointsScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        backgroundColor: Colors.green[600],
+        elevation: 5.0,
       ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
@@ -53,77 +48,16 @@ class _PointsScreenState extends State<PointsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(
-                'Hi, ${widget.userData['user']['fullname']}',
-                style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8.0),
+              _buildGreeting(),
+              const SizedBox(height: 16.0),
+              _buildPointsCard(points),
+              const SizedBox(height: 24.0),
               const Text(
-                'You have earned',
-                style: TextStyle(fontSize: 16.0),
+                'Redeem your points...',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16.0),
-              Container(
-                color: const Color.fromARGB(197, 233, 255, 182),
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          '$points',
-                          style: const TextStyle(
-                            fontSize: 28.0,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF40A858),
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        const Text(
-                          'Total Points',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ScrapPointsScreen(userData: widget.userData),
-                          ),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.more_vert,
-                        color: Color(0xFF40A858),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              const Text(
-                'You can redeem your points here...',
-                style: TextStyle(fontSize: 16.0),
-              ),
-              const SizedBox(height: 16.0),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: _buildItem('Cash', 'assets/cash_icon.png', context),
-                  ),
-                  const SizedBox(width: 16.0), // Space between items
-                  Expanded(
-                    child: _buildItem('Goods', 'assets/goods_icon.png', context),
-                  ),
-                ],
-              ),
+              _buildRedeemOptions(context),
             ],
           ),
         ),
@@ -131,7 +65,101 @@ class _PointsScreenState extends State<PointsScreen> {
     );
   }
 
-  Widget _buildItem(String label, String imagePath, BuildContext context) {
+  Widget _buildGreeting() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Hi, ${widget.userData['user']['fullname']}!',
+          style: const TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        ),
+        const SizedBox(height: 8.0),
+        const Text(
+          'You have earned:',
+          style: TextStyle(fontSize: 18.0, color: Colors.black87),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPointsCard(String points) {
+    return Container(
+      padding: const EdgeInsets.all(24.0),
+      decoration: BoxDecoration(
+        color: Colors.green[50],
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 3,
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                '$points',
+                style: const TextStyle(
+                  fontSize: 40.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF40A858),
+                ),
+              ),
+              const SizedBox(height: 4.0),
+              const Text(
+                'Total Points',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ScrapPointsScreen(userData: widget.userData),
+                ),
+              );
+            },
+            child: const Icon(
+              Icons.more_vert,
+              color: Color(0xFF40A858),
+              size: 32.0,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRedeemOptions(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: _buildRedeemItem('Cash', 'assets/cash_icon.png', context),
+        ),
+        const SizedBox(width: 16.0),
+        Expanded(
+          child: _buildRedeemItem('Goods', 'assets/goods_icon.png', context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRedeemItem(String label, String imagePath, BuildContext context) {
     return GestureDetector(
       onTap: () {
         if (label == 'Cash') {
@@ -141,9 +169,7 @@ class _PointsScreenState extends State<PointsScreen> {
               builder: (context) => RedeemCashScreen(userData: widget.userData),
             ),
           );
-        }
-
-        if (label == 'Goods') {
+        } else if (label == 'Goods') {
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -153,20 +179,31 @@ class _PointsScreenState extends State<PointsScreen> {
         }
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[300]!),
-          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 3,
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset(imagePath, width: 40, height: 40),
-            const SizedBox(height: 8.0),
+            Image.asset(imagePath, width: 50, height: 50),
+            const SizedBox(height: 12.0),
             Text(
               label,
-              style: const TextStyle(fontSize: 16.0),
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),

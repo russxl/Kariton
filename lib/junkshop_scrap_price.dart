@@ -185,7 +185,7 @@ class _SetPriceJunkshopState extends State<SetPriceJunkshop> {
                                   var goodsData = {
                                     "name": _goodsList[index]['scraps'],
                                     "conversion_rate": _goodsList[index]['points'].toString(),
-                                    "id": widget.data['barangay']['_id'],
+                                    "id": widget.data['junkOwner']['_id'],
                                     "action": "Delete"
                                   };
 

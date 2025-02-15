@@ -2,20 +2,217 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Kariton/api/api.dart'; // Ensure the API is correctly imported
 
-class BarangayCollectScrapPage extends StatefulWidget {
+class BarangayCommunityCollectionScreen extends StatefulWidget {
+  final Map<dynamic, dynamic> data;
+
+  const BarangayCommunityCollectionScreen({Key? key, required this.data}) : super(key: key);
+
+  @override
+  _BarangayCommunityCollectionScreenState createState() => _BarangayCommunityCollectionScreenState();
+}
+
+class _BarangayCommunityCollectionScreenState extends State<BarangayCommunityCollectionScreen> {
+  late List<Map<String, dynamic>> collectionRequests;
+
+  @override
+  void initState() {
+    super.initState();
+    collectionRequests = List<Map<String, dynamic>>.from(widget.data['collectionRequests'] ?? []);
+    collectionRequests.removeWhere((request) => request['status'] == 'Done');
+  }
+
+  Future<void> _refreshData() async {
+    if (widget.data['collectionRequests'] != null && widget.data['collectionRequests'].isNotEmpty) {
+      var requestData = {
+        "id": widget.data['barangay']['_id'],
+        "type": "Barangay"
+      };
+
+      try {
+        final updatedData = await Api.getHome(context, requestData);
+      
+      } catch (error) {
+        print("Error refreshing data: $error");
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, dynamic>> reversedCollectionRequests = collectionRequests.reversed.toList();
+    return Scaffold(
+      body: Padding(
+        padding: EdgeInsets.fromLTRB(20.0, 70.0, 20.0, 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // Centered Title
+            Center(
+              child: Text(
+                'Community Collection Requests',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF344E41),
+                  fontFamily: 'Roboto',
+                ),
+              ),
+            ),
+            const SizedBox(height: 10.0),
+
+            // Notification Content
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshData,
+                child: ListView.builder(
+                  itemCount: reversedCollectionRequests.length,
+                  itemBuilder: (context, index) {
+                    var request = reversedCollectionRequests[index];
+
+                    // Assigning a color based on index for variety
+                    final backgroundColor = index % 2 == 0
+                        ? Color(0xFFE0F7FA) // Light teal
+                        : Color(0xFFFFF9C4); // Light yellow
+
+                    return GestureDetector(
+                      onTap: () {
+                       Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => BarangayCollectScrapPage1(
+      data: {
+        ...widget.data,
+        'selectedRequest': request,
+        'userId': request['uID'],
+        'transactionID':request['_id']
+      },
+    ),
+  ),
+);
+
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 16.0),
+                        padding: EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: backgroundColor,
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 2,
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            // Icon based on request status
+                            Icon(
+                              request['status'] == 'Pending'
+                                  ? Icons.hourglass_empty
+                                  : request['status'] == 'Completed'
+                                      ? Icons.check_circle
+                                      : Icons.schedule,
+                              color: request['status'] == 'Pending'
+                                  ? Colors.orangeAccent
+                                  : request['status'] == 'Completed'
+                                      ? Colors.green
+                                      : Color(0xFF40A858),
+                              size: 30,
+                            ),
+                            const SizedBox(width: 12.0),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        request['name'] ?? 'Unknown name',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
+                                          fontFamily: 'Roboto',
+                                        ),
+                                      ),
+                                      Text(
+                                        request['status'] ?? 'Status unknown',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: request['status'] == 'Pending'
+                                              ? Colors.orangeAccent
+                                              : request['status'] == 'Completed'
+                                                  ? Colors.green
+                                                  : Color(0xFF40A858),
+                                          fontFamily: 'Roboto',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Text(
+                                    'Scrap Type: ${request['scrapType'] ?? 'Unknown scrap type'}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.grey[800],
+                                      fontFamily: 'Roboto',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BarangayCollectScrapPage1 extends StatefulWidget {
   final Map data;
 
-  const BarangayCollectScrapPage({Key? key, required this.data}) : super(key: key);
+  const BarangayCollectScrapPage1({Key? key, required this.data}) : super(key: key);
 
   @override
   _BarangayCollectScrapPageState createState() => _BarangayCollectScrapPageState();
 }
 
-class _BarangayCollectScrapPageState extends State<BarangayCollectScrapPage> {
+class _BarangayCollectScrapPageState extends State<BarangayCollectScrapPage1> {
   final _pageController = PageController();
   final _idController = TextEditingController();
   bool _userExists = false;
   bool _isUserIdProvided = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.data.containsKey('selectedRequest')) {
+      // Automatically proceed to second step if request data is passed
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _isUserIdProvided = true;
+        });
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +233,8 @@ class _BarangayCollectScrapPageState extends State<BarangayCollectScrapPage> {
           _buildInitialPage(context),
           Builder(
             builder: (context) {
-              return DetailPage(userId: _idController.text, data: widget.data);
+             return DetailPage(userId: widget.data.containsKey('userId') ? widget.data['userId'] : _idController.text, data: widget.data, transactionID:widget.data['transactionID']);
+
             },
           ),
         ],
@@ -129,7 +327,31 @@ class _BarangayCollectScrapPageState extends State<BarangayCollectScrapPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-              
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isUserIdProvided = true;
+                    });
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF40A858),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: const Text(
+                    'Proceed Without User ID',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -174,9 +396,10 @@ class _BarangayCollectScrapPageState extends State<BarangayCollectScrapPage> {
 
 class DetailPage extends StatefulWidget {
   final String userId;
+  final String transactionID;
   final Map data;
 
-  const DetailPage({Key? key, required this.userId, required this.data}) : super(key: key);
+  const DetailPage({Key? key, required this.userId, required this.data, required this.transactionID}) : super(key: key);
 
   @override
   _DetailPageState createState() => _DetailPageState();
@@ -276,10 +499,11 @@ class _DetailPageState extends State<DetailPage> {
                             'points': _pointsController.text,
                             'barangayID': widget.data['barangay']['_id'],
                             'barangayName': widget.data['barangay']['bName'],
+                            'transactionID':widget.transactionID,
                           };
 
                           await Api.collectScrap(context, collectionData);
-                         
+                          
 
                         },
                         child: const Text('Done'),

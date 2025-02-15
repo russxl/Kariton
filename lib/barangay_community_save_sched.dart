@@ -62,7 +62,7 @@ class BarangayCommunitySaveSchedScreen extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Saved Schedule',
+                  'Schedule successfully saved!',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class BarangayCommunitySaveSchedScreen extends StatelessWidget {
                 ),
                 SizedBox(width: 8.0),
                 Text(
-                  '(for pickup)',
+                  '',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.normal,

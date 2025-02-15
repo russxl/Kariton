@@ -1,130 +1,137 @@
+import 'package:Kariton/barangay_community_collection.dart';
+import 'package:Kariton/barangay_pick_up.dart';
+import 'package:Kariton/barangay_sched_status.dart';
 import 'package:flutter/material.dart';
-import 'barangay_community_page.dart'; // Import the file with BarangayCommunitySetSchedScreen
+import 'barangay_community_page.dart';
 import 'barangay_junkshop.dart';
-import 'barangay_collect_scrap_page.dart'; // Import the file with BarangayJunkshopScreen
+import 'barangay_collect_scrap_page.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
 class BarangayHomeScreen extends StatelessWidget {
   final Map data;
-String getGreeting() {
-  // Initialize the timezone database
-  tz.initializeTimeZones();
 
-  // Get current time in the Philippines timezone
-final now = tz.TZDateTime.now(tz.getLocation('Asia/Manila'));
-  final hour = now.hour; // Get the current hour
-
-  if (hour < 12) {
-    return 'Good morning';
-  } else if (hour < 18) {
-    return 'Good afternoon';
-  } else {
-    return 'Good evening';
-  }
-}
   const BarangayHomeScreen({Key? key, required this.data}) : super(key: key);
-  
+
+  String getGreeting() {
+    tz.initializeTimeZones();
+    final now = tz.TZDateTime.now(tz.getLocation('Asia/Manila'));
+    final hour = now.hour;
+
+    if (hour < 12) {
+      return 'Good morning';
+    } else if (hour < 18) {
+      return 'Good afternoon';
+    } else {
+      return 'Good evening';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background color for the top half
+          // Gradient Top Background
           Container(
             height: MediaQuery.of(context).size.height / 2.8,
-            color: Color.fromARGB(184, 162, 207, 125),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF80C784), Color(0xFF40A858)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(20.0, 70.0, 20.0, 20.0),
+            padding: EdgeInsets.fromLTRB(20.0, 60.0, 20.0, 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                // Location Icon and Greeting
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                       
-                       Text(
-  '${getGreeting()}',
-  style: TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    fontFamily: 'Roboto',
-  ),
-),
-                      ],
+                // Greeting Section
+                Center(
+                  child: Text(
+                    getGreeting(),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                      color: Colors.white,
                     ),
-                
-                  ],
-                ),
-                SizedBox(height: 16.0),
-
-                // Total Points
-                Text(
-                  '',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Roboto',
                   ),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 10.0),
 
-                // Display Barangay Name instead of Search Box
+                // Barangay Name Display
                 Center(
                   child: Text(
                     '${data['barangay']['bName']}',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Roboto',
+                      color: Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 20.0),
 
-                // Sort Trash Button
+                // Collect Scrap Button
                 Center(
-                  child: ElevatedButton(
+                  child: RoundedButton(
+                    label: 'Collect Scrap',
+                    color: Color(0xFF34A853),
+                    icon: Icons.recycling,
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => BarangayCollectScrapPage(data: data)),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF40A858), // Background color
-                      foregroundColor: Colors.white, // Text color
-                      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 100),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: Text(
-                      'Collect Scrap',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Roboto',
-                      ),
-                    ),
                   ),
                 ),
+                const SizedBox(height: 20.0),
 
-                SizedBox(height: 20.0),
+                // Set Pickup Schedule Button
+                Center(
+                  child: RoundedButton(
+                    label: 'Pick up schedule status',
+                    color: Colors.blueAccent,
+                    icon: Icons.schedule,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BarangayPickUpScheduleScreen(data: data)),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10.0),
 
-                // Category Row
-           
-                SizedBox(height: 16.0),
+                // Pending Collection Requests Button
+                Center(
+                  child: RoundedButton(
+                    label: 'Pending Collection Requests',
+                    color: Colors.orangeAccent,
+                    icon: Icons.pending_actions,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BarangayCommunityCollectionScreen(data: data)),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20.0),
 
-                // Category Items
+                // Category Row (Resident and Junkshop)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CategoryItem(
                       title: 'Resident',
                       assetPath: 'assets/COMMUNITYAA.png',
+                      backgroundColor: Colors.lightBlue[100]!,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -137,6 +144,7 @@ final now = tz.TZDateTime.now(tz.getLocation('Asia/Manila'));
                     CategoryItem(
                       title: 'Junkshop',
                       assetPath: 'assets/JSHOPAAA.png',
+                      backgroundColor: Colors.lightGreen[100]!,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -157,15 +165,56 @@ final now = tz.TZDateTime.now(tz.getLocation('Asia/Manila'));
   }
 }
 
+class RoundedButton extends StatelessWidget {
+  final String label;
+  final Color color;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const RoundedButton({
+    Key? key,
+    required this.label,
+    required this.color,
+    required this.icon,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      icon: Icon(icon, color: Colors.white),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontSize: 16,
+          fontFamily: 'Roboto',
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30), // Larger radius for rounded effect
+        ),
+      ),
+    );
+  }
+}
+
 class CategoryItem extends StatelessWidget {
   final String title;
   final String assetPath;
-  final VoidCallback onTap; // Add onTap callback
+  final Color backgroundColor;
+  final VoidCallback onTap;
 
   CategoryItem({
     required this.title,
     required this.assetPath,
-    required this.onTap, // Initialize onTap
+    required this.backgroundColor,
+    required this.onTap,
   });
 
   @override
@@ -175,19 +224,26 @@ class CategoryItem extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 8.0),
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(color: Colors.grey),
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(15.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 2,
+              blurRadius: 8,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
         child: Column(
           children: [
-            Image.asset(assetPath),
-            SizedBox(height: 8.0),
+            Image.asset(assetPath, width: 60, height: 60),
+            const SizedBox(height: 8.0),
             ElevatedButton(
-              onPressed: onTap, // Use the onTap callback
+              onPressed: onTap,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF40A858), // Background color
-                foregroundColor: Colors.white, // Text color
+                backgroundColor: Color(0xFF40A858),
+                foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -197,19 +253,20 @@ class CategoryItem extends StatelessWidget {
                 'Click here',
                 style: TextStyle(
                   fontFamily: 'Roboto',
+                  fontSize: 14,
                 ),
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
               title,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Roboto',
+                color: Colors.black87,
               ),
             ),
-            SizedBox(height: 8.0),
           ],
         ),
       ),
